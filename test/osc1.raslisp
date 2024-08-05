@@ -1,19 +1,20 @@
-[box osc1 (
+(box osc1 (
     in freq: float
     in amp: float
     in wav_sel: i32
     out raw_wav: float
 )
-    (let sin1 (sinwave 128)) // sin1: waveform
-    (let sample (idx sin1 65)) // get sin1[65]'s sample value
-    (let raw_wav amp * sample)
-]
+    (let sin1 (sinwave 128)) ; sin1: waveform
+    (let sample (idx sin1 65)) ; get sin1[65]'s sample value
+    (let raw_wav (* amp sample))
+)
 
-[box main (
+(box main (
     out stereo_L: float
     out stereo_R: float
 )
-    [osc1 osc1_out_raw]
-    (let stereo_L = osc1_out_raw)
-    (let stereo_R = osc1_out_raw)
-]
+    (let amp (* 50 2))
+    [osc1 440 amp 0 osc1_out_raw]
+    (let stereo_L osc1_out_raw)
+    (let stereo_R osc1_out_raw)
+)

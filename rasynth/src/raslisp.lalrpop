@@ -3,21 +3,46 @@ use crate::ast::*;
 
 grammar;
 
-pub BoxDefine: BoxDefine = {
-    "(" "box" <name:NodeIdent> "(" <ports:PortVec> ")" <body:Exprs> ")" => BoxDefine::Box(name, ports, body),
+match {
+    r"\s*" => { },
+    r";[^\n\r]*[\n\r]*" => { },
+} else {
+    _
+}
+
+pub Top: TopDef = {
+    <bs:Boxes> => TopDef::Boxes(bs),
 };
 
-pub Exprs: Vec<Statement> = {
-    <s:Statement> => vec![s],
-    <s:Statement> <ss:Exprs> => {
+pub Boxes: Vec<BoxDef> = {
+    <b:BoxDef> => vec![b],
+    <b:BoxDef> <bs:Boxes> => {
+        let mut v = bs;
+        v.insert(0, b);
+        v
+    },
+};
+
+pub BoxDef: BoxDef = {
+    "(" "box" <name:NodeIdent> "(" <ports:PortVec> ")" <body:Stmts> ")" => BoxDef::Box(name, ports, body),
+};
+
+pub Stmts: Vec<Stmt> = {
+    <s:Stmt> => vec![s],
+    <s:Stmt> <ss:Stmts> => {
         let mut v = ss;
         v.insert(0, s);
         v
     },
 };
 
-pub Statement: Statement = {
-    <ld:LetDefine> => Statement::LetDefine(ld),
+pub Exprs: Vec<Expr> = {
+    <s:Expr> => vec![s],
+    <s:Expr> <ss:Exprs> => {
+        let mut v = ss;
+        v.insert(0, s);
+        v
+    },
 };
 
 pub PortVec: Vec<Port> = {
@@ -34,8 +59,15 @@ pub Port: Port = {
     "out" <name:NodeIdent> ":" <ty:Type> => Port::Out(name, ty),
 };
 
-pub LetDefine: LetDefine = {
-    "(" "let" <name:NodeIdent>  <expr:Expr> ")" => LetDefine::Let(name, expr),
+pub Stmt: Stmt = {
+    <ld:LetDef> => Stmt::LetDef(ld),
+    <bw:BoxWire> => Stmt::BoxWire(bw),
+};
+pub BoxWire: BoxWire = {
+    "[" <name:NodeIdent> <exprs:Exprs> "]" => BoxWire::Boxw(name, exprs),
+};
+pub LetDef: LetDef = {
+    "(" "let" <name:NodeIdent>  <expr:Expr> ")" => LetDef::Let(name, expr),
 };
 pub Expr: Expr = {
     <ni:NodeIdent> => Expr::NodeIdent(ni),

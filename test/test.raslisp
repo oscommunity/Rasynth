@@ -2,5 +2,14 @@
     in in1: float
     out out1: float
 )
-    (let out1 (+ in1 1))
+    (let out1 (+ in1 1)) ; comment test
+)
+
+(box main (
+    out L: float
+    out R: float
+)
+    [test1 1 out1]
+    (let L out1)
+    (let R out1)
 )

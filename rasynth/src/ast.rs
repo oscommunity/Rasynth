@@ -12,18 +12,24 @@ pub enum Numeric {
 }
 
 #[derive(Debug, Clone)]
-pub enum LetDefine {
+pub enum LetDef {
     Let(String, Expr),
 }
 
 #[derive(Debug, Clone)]
-pub enum BoxDefine {
-    Box(String, Vec<Port>, Vec<Statement>),
+pub enum BoxWire {
+    Boxw(String, Vec<Expr>),
 }
 
 #[derive(Debug, Clone)]
-pub enum Statement {
-    LetDefine(LetDefine),
+pub enum BoxDef {
+    Box(String, Vec<Port>, Vec<Stmt>),
+}
+
+#[derive(Debug, Clone)]
+pub enum Stmt {
+    LetDef(LetDef),
+    BoxWire(BoxWire),
 }
 
 #[derive(Debug, Clone)]
@@ -48,4 +54,9 @@ impl Type {
             _ => None,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub enum TopDef {
+    Boxes(Vec<BoxDef>),
 }
