@@ -1,0 +1,6 @@
+(box test1 (
+    in in1: float
+    out out1: float
+)
+    (let out1 (+ in1 1))
+)

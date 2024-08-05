@@ -1,0 +1,77 @@
+use std::str::FromStr;
+use crate::ast::*;
+
+grammar;
+
+pub BoxDefine: BoxDefine = {
+    "(" "box" <name:NodeIdent> "(" <ports:PortVec> ")" <body:Exprs> ")" => BoxDefine::Box(name, ports, body),
+};
+
+pub Exprs: Vec<Statement> = {
+    <s:Statement> => vec![s],
+    <s:Statement> <ss:Exprs> => {
+        let mut v = ss;
+        v.insert(0, s);
+        v
+    },
+};
+
+pub Statement: Statement = {
+    <ld:LetDefine> => Statement::LetDefine(ld),
+};
+
+pub PortVec: Vec<Port> = {
+    <p:Port> => vec![p],
+    <p:Port> <ps:PortVec> => {
+        let mut v = ps;
+        v.insert(0, p);
+        v
+    },
+};
+
+pub Port: Port = {
+    "in" <name:NodeIdent> ":" <ty:Type> => Port::In(name, ty),
+    "out" <name:NodeIdent> ":" <ty:Type> => Port::Out(name, ty),
+};
+
+pub LetDefine: LetDefine = {
+    "(" "let" <name:NodeIdent>  <expr:Expr> ")" => LetDefine::Let(name, expr),
+};
+pub Expr: Expr = {
+    <ni:NodeIdent> => Expr::NodeIdent(ni),
+    <nm:Num> => Expr::Num(nm),
+    "(" <op:Op> <args:ArgVec> ")" => Expr::Operator(op, args),
+}
+pub ArgVec: Vec<Expr> = {
+    <e:Expr> => vec![e],
+    <e:Expr> <es:ArgVec> => {
+        let mut v = es;
+        v.insert(0, e);
+        v
+    },
+}
+pub Op: String = {
+    // + - * / > < >= <= == != is allowed
+    <s:r"[a-zA-Z_][a-zA-Z0-9_]*"> => s.to_string(),
+    "+" => "+".to_string(),
+    "-" => "-".to_string(),
+    "*" => "*".to_string(),
+    "/" => "/".to_string(),
+    ">" => ">".to_string(),
+    "<" => "<".to_string(),
+    ">=" => ">=".to_string(),
+    "<=" => "<=".to_string(),
+    "==" => "==".to_string(),
+};
+pub Type: Type = {
+    <s:r"[a-zA-Z_][a-zA-Z0-9_]*"> => Type::from_str(s).unwrap(),
+};
+pub NodeIdent: String = {
+    <s:r"[a-zA-Z_][a-zA-Z0-9_]*"> => s.to_string(),
+};
+pub Num: Numeric = {
+    <i:Int32> => Numeric::Int32(i),
+    <f:Float> => Numeric::Float(f),
+};
+pub Float: f32 = <s:r"[0-9]+\.[0-9]+"> => f32::from_str(s).unwrap();
+pub Int32: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
