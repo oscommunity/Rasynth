@@ -23,7 +23,7 @@ pub enum BoxWire {
 
 #[derive(Debug, Clone)]
 pub enum BoxDef {
-    Box(String, Vec<Port>, Vec<Stmt>),
+    ModuleBox(String, Vec<Port>, Vec<Stmt>),
 }
 
 #[derive(Debug, Clone)]

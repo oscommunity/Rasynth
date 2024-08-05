@@ -24,7 +24,7 @@ pub Boxes: Vec<BoxDef> = {
 };
 
 pub BoxDef: BoxDef = {
-    "(" "box" <name:NodeIdent> "(" <ports:PortVec> ")" <body:Stmts> ")" => BoxDef::Box(name, ports, body),
+    "(" "box" <name:NodeIdent> "(" <ports:PortVec> ")" <body:Stmts> ")" => BoxDef::ModuleBox(name, ports, body),
 };
 
 pub Stmts: Vec<Stmt> = {

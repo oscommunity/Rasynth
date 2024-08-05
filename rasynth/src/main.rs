@@ -5,6 +5,7 @@ use std::fs;
 
 pub mod ast;
 pub mod graph;
+pub mod symbol_table;
 
 lalrpop_mod!(pub raslisp); // synthesized by LALRPOP
 
@@ -21,20 +22,27 @@ fn main() {
     info!("Input Top File Path: {}", input_file);
     let test1 = fs::read_to_string(input_file).expect("Unable to read file");
 
-    let r = raslisp::TopParser::new().parse(&test1).unwrap();
+    let top = raslisp::TopParser::new().parse(&test1).unwrap();
     info!("AST Parsed Successfully!");
 
     graph::FLOW_GRAPH
         .lock()
         .unwrap()
-        .replace(graph::FlowGraph::new(Some(r)));
+        .replace(graph::FlowGraph::new(Some(top)));
+
+    let boxes = graph::FLOW_GRAPH
+        .lock()
+        .unwrap()
+        .as_mut()
+        .unwrap()
+        .generate();
 
     graph::FLOW_GRAPH
         .lock()
         .unwrap()
-        .as_ref()
+        .as_mut()
         .unwrap()
-        .generate();
+        .node_create(&boxes);
 
     info!("Graph: {:?}", graph::FLOW_GRAPH.lock().unwrap());
 
