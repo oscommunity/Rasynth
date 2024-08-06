@@ -9,6 +9,6 @@ lalrpop = "0.20.2"
 
 [dependencies]
 env_logger = "0.11.5"
-graph = "0.3.1"
 lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
 log = "0.4.22"
+petgraph = "0.6.5"

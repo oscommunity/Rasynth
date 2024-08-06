@@ -46,5 +46,12 @@ fn main() {
 
     info!("Graph: {:?}", graph::FLOW_GRAPH.lock().unwrap());
 
+    graph::FLOW_GRAPH
+        .lock()
+        .unwrap()
+        .as_mut()
+        .unwrap()
+        .dump_dot();
+
     info!("Goodbye!");
 }
