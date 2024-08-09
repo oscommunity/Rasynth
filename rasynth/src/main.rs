@@ -6,6 +6,7 @@ use std::fs;
 pub mod ast;
 pub mod graph;
 pub mod symbol_table;
+pub mod board;
 
 lalrpop_mod!(pub raslisp); // synthesized by LALRPOP
 
