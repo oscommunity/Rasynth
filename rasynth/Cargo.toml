@@ -12,3 +12,4 @@ env_logger = "0.11.5"
 lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
 log = "0.4.22"
 petgraph = "0.6.5"
+rppal = "0.18.0"
